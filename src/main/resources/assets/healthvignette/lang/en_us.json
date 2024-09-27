@@ -1,0 +1,13 @@
+{
+  "text.autoconfig.healthvignette.title": "HealthVignette Settings",
+  "text.autoconfig.healthvignette.option.enabled": "HealthVignette Effect",
+  "text.autoconfig.healthvignette.option.enabled.@Tooltip": "Enable or disable the health vignette effect entirely.",
+  "text.autoconfig.healthvignette.option.introductionThreshold": "Diminished Health Threshold",
+  "text.autoconfig.healthvignette.option.introductionThreshold.@Tooltip": "Modify the health percentage at which the health vignette effect begins to appear.",
+  "text.autoconfig.healthvignette.option.severeThreshold": "Severe Health Threshold",
+  "text.autoconfig.healthvignette.option.severeThreshold.@Tooltip": "Modify the health percentage at which the health vignette effect should appear at maximum intensity.",
+  "text.autoconfig.healthvignette.option.vignetteColor": "Health Vignette Color",
+  "text.autoconfig.healthvignette.option.vignetteColor.@Tooltip": "Modify the color of the health vignette effect. Uses the hex color code format.",
+  "text.autoconfig.healthvignette.option.vignetteIntensity": "Health Vignette Intensity",
+  "text.autoconfig.healthvignette.option.vignetteIntensity.@Tooltip": "Modify the intensity of the health vignette effect."
+}
