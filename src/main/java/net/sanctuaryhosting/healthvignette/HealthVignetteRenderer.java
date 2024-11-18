@@ -3,6 +3,7 @@ package net.sanctuaryhosting.healthvignette;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;
@@ -45,17 +46,17 @@ public class HealthVignetteRenderer {
                 RenderSystem.depthMask(false);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                RenderSystem.setShaderColor(r, g, b, intensity);
                 RenderSystem.setShaderTexture(0, vignetteTexture);
+                RenderSystem.setShaderColor(r, g, b, intensity);
 
                 int screenWidth = client.getWindow().getScaledWidth();
                 int screenHeight = client.getWindow().getScaledHeight();
 
-                context.drawTexture(vignetteTexture, 0, 0, -90, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
+                context.drawTexture(RenderLayer::getGuiTexturedOverlay, vignetteTexture,0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
 
-                RenderSystem.depthMask(true);
                 RenderSystem.enableDepthTest();
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.depthMask(true);
+                RenderSystem.disableBlend();
             }
         }
     }

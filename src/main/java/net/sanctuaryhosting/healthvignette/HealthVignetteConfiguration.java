@@ -23,5 +23,5 @@ public class HealthVignetteConfiguration implements ConfigData {
 
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
     @ConfigEntry.Gui.Tooltip
-    public int vignetteIntensity = 40;
+    public int vignetteIntensity = 20;
 }
