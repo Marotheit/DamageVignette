@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    @Inject(method = "render", at = @At(value = "HEAD", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V"))
+    @Inject(method = "render", at = @At(value = "HEAD", target = "Lnet/minecraft/client/render/RenderPhase;enableBlend()V"))
     private void renderHealthVignette(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         HealthVignetteRenderer.render.renderHud(context);
     }

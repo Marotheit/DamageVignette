@@ -1,11 +1,14 @@
 package net.sanctuaryhosting.healthvignette;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameMode;
 
 public class HealthVignetteRenderer {
@@ -25,38 +28,39 @@ public class HealthVignetteRenderer {
                 return;
             }
 
-            float health = player.getHealth();
-            float maxHealth = player.getMaxHealth();
-            float healthPercentage = health / maxHealth;
+            float healthPercentage = player.getHealth() / player.getMaxHealth();
+            float minimumStrength = HealthVignette.configuration.introductionThreshold / 100F;
+            float maximumStrength = HealthVignette.configuration.severeThreshold / 100F;
 
-            float minStrength = HealthVignette.configuration.introductionThreshold / 100f;
-            float maxStrength = HealthVignette.configuration.severeThreshold / 100f;
+            if (healthPercentage <= minimumStrength) {
+                float healthRange = healthPercentage - maximumStrength;
+                float thresholdRange = minimumStrength - maximumStrength;
 
-            if (healthPercentage <= minStrength) {
-                float intensity = 1.0f - (healthPercentage - maxStrength) / (minStrength - maxStrength);
-                intensity = Math.max(0.0f, Math.min(1.0f, intensity));
-                intensity *= HealthVignette.configuration.vignetteIntensity / 100f;
+                float intensity = 0.0F;
+                if (healthRange < thresholdRange) {
+                    intensity = 1.0F - (healthRange / thresholdRange);
+                }
 
-                int color = HealthVignette.configuration.vignetteColor;
-                float r = ((color >> 16) & 0xFF) / 255.0f;
-                float g = ((color >> 8) & 0xFF) / 255.0f;
-                float b = (color & 0xFF) / 255.0f;
+                if (intensity > 0.0F) {
+                    intensity = MathHelper.clamp(intensity, 0.0F, 1.0F);
+                    intensity *= HealthVignette.configuration.vignetteIntensity / 100F;
 
-                RenderSystem.disableDepthTest();
-                RenderSystem.depthMask(false);
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.setShaderTexture(0, vignetteTexture);
-                RenderSystem.setShaderColor(r, g, b, intensity);
+                    int color = HealthVignette.configuration.vignetteColor;
+                    float baseRed = ((color >> 16) & 0xFF) / 255.0F;
+                    float baseGreen = ((color >> 8) & 0xFF) / 255.0F;
+                    float baseBlue = (color & 0xFF) / 255.0F;
+                    float r = 1.0F - (intensity * baseRed);
+                    float g = 1.0F - (intensity * baseGreen);
+                    float b = 1.0F - (intensity * baseBlue);
 
-                int screenWidth = client.getWindow().getScaledWidth();
-                int screenHeight = client.getWindow().getScaledHeight();
+                    RenderSystem.enableBlend();
+                    RenderSystem.blendFunc(GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR);
 
-                context.drawTexture(RenderLayer::getGuiTexturedOverlay, vignetteTexture,0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
+                    context.drawTexture(RenderLayer::getVignette, vignetteTexture, 0, 0, 0.0F, 0.0F, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), ColorHelper.fromFloats(1.0F, r, g, b));
 
-                RenderSystem.enableDepthTest();
-                RenderSystem.depthMask(true);
-                RenderSystem.disableBlend();
+                    RenderSystem.disableBlend();
+                    RenderSystem.defaultBlendFunc();
+                }
             }
         }
     }
